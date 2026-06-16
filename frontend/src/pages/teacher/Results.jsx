@@ -6,7 +6,6 @@ export default function TeacherResults() {
   const [sessions, setSessions] = useState([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
-  const courseId = localStorage.getItem('courseId')
 
   useEffect(() => {
     fetchResults()
@@ -14,8 +13,14 @@ export default function TeacherResults() {
 
   const fetchResults = async () => {
     try {
-      const res = await axios.get(`http://127.0.0.1:8000/exam/course-results/${courseId}`)
-      setSessions(res.data)
+      const teacherId = localStorage.getItem('user_id')
+      const coursesRes = await axios.get(`http://127.0.0.1:8000/courses/teacher/${teacherId}`)
+      const allSessions = []
+      for (const course of coursesRes.data) {
+        const res = await axios.get(`http://127.0.0.1:8000/exam/course-results/${course.id}`)
+        res.data.forEach(s => allSessions.push({ ...s, course_name: course.name }))
+      }
+      setSessions(allSessions)
     } catch {
       console.log('Error fetching results')
     }
@@ -30,7 +35,7 @@ export default function TeacherResults() {
         </button>
 
         <h2 className="text-2xl font-bold text-gray-800 mb-1">Student Results</h2>
-        <p className="text-gray-500 mb-6">Performance overview for your latest session</p>
+        <p className="text-gray-500 mb-6">Performance overview for all your courses</p>
 
         {loading && <p className="text-gray-400 text-sm">Loading...</p>}
 
@@ -51,6 +56,7 @@ export default function TeacherResults() {
                 <div>
                   <h3 className="font-bold text-gray-800">{s.student_name}</h3>
                   <p className="text-sm text-gray-400">{s.student_email}</p>
+                  <p className="text-sm text-gray-400">Course: {s.course_name}</p>
                   <p className="text-sm text-gray-400">Type: {s.exam_type} • {new Date(s.started_at).toLocaleDateString()}</p>
                 </div>
               </div>

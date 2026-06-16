@@ -1,5 +1,4 @@
-﻿
-from sqlalchemy import Column, Integer, String, ForeignKey
+﻿from sqlalchemy import Column, Integer, String, ForeignKey
 from app.database import Base
 
 class Course(Base):
@@ -8,3 +7,5 @@ class Course(Base):
     name = Column(String, nullable=False)
     branch = Column(String, nullable=False)
     teacher_id = Column(Integer, ForeignKey("users.id"))
+    subject = Column(String, nullable=True)
+    semester = Column(Integer, nullable=True)

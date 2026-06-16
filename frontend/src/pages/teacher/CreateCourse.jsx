@@ -21,7 +21,7 @@ export default function CreateCourse() {
     }
     try {
       const res = await axios.post(
-        `http://127.0.0.1:8000/courses/create?name=${sessionName}&branch=${branch}&teacher_id=${teacherId}`
+        `http://127.0.0.1:8000/courses/create?name=${sessionName}&branch=${branch}&teacher_id=${teacherId}&subject=${subject}&semester=${semester}`
       )
       localStorage.setItem('courseId', res.data.course_id)
       localStorage.setItem('numQuestions', numQuestions)
